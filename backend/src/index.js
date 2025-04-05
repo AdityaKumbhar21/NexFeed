@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { dbConnection } from "./config/db.config.js";
 import authRouter from "./routes/auth.route.js"
+import newsRouter from "./routes/news.route.js";
 dotenv.config();
 const app = express();
 
@@ -13,7 +14,8 @@ app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 
 // adding api routes
-app.use('/api/auth', authRouter)
+app.use('/api/auth', authRouter);
+app.use('/api/news/', newsRouter);
 
 const port = process.env.PORT;
 app.listen(port, ()=>{
