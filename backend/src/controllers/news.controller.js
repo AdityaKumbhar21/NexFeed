@@ -78,15 +78,15 @@ export const getCategoryNews = async (req, res)=>{
     try {
         const newsPreference = await newsModel.findOne({userId: req.user._id});
         const categories = newsPreference.categories;
+
         if(!categories){
             return res.status(200).json({message: "No categories saved"});
         }
-        // optimization to save the api quota....
-        const keywords = categories.join(' OR');
+
+        const lowerCaseCategories = categories.map(cat => cat.toLowerCase());
         
-        const response = await axios.get(`${BASE_URL}search/`, {
+        const response = await axios.get(`${BASE_URL}latest-news`, {
             params:{
-                keywords,
                 apiKey,
                 language: "en"
             }
@@ -94,7 +94,9 @@ export const getCategoryNews = async (req, res)=>{
 
         const news  = response.data.news;
 
-        res.status(200).json(news);
+        const filteredNews = news.filter(article => lowerCaseCategories.includes(article.category?.toLowerCase()));
+
+        res.status(200).json(filteredNews);
 
     } catch (error) {
         console.log("Error in getting the category news ", error);
