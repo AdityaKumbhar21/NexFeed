@@ -19,14 +19,14 @@ export const validateUser = (req, res, next)=>{
     if(req.method === "POST" && req.path === "/signup"){
         schema = Schemas.signup;
     }
-    if(req.method === "POST" && req.path === "/login"){
+    else if(req.method === "POST" && req.path === "/login"){
         schema = Schemas.login;
     }
     else{
         return res.status(404).json({message: "No route found"});
     }
 
-    const error = schema.validate(req.body);
+    const {error} = schema.validate(req.body);
 
     if(error){
         return res.status(400).json({message: error.details[0].message});

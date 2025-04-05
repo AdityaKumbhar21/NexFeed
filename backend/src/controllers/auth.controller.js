@@ -6,7 +6,7 @@ export const signup =async (req, res)=>{
     try {
         const {fullname, email, password} = req.body;
 
-        const user = await userModel.find({email});
+        const user = await userModel.findOne({email});
 
         if(user){
             return res.status(400).json({message: "User already exists"});
@@ -64,6 +64,7 @@ export const login = async(req, res)=>{
 export const logout = (req,res)=>{
    try {
     res.cookie("token", "") 
+    return res.status(200).json({message: "Logged out successfully"})
    } catch (error) {
         res.status(500).json({message: "Internal server issue"});
         console.log("Error in logging out", error);
