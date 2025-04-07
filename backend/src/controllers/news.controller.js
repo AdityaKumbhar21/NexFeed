@@ -79,24 +79,23 @@ export const getCategoryNews = async (req, res)=>{
         const newsPreference = await newsModel.findOne({userId: req.user._id});
         const categories = newsPreference.categories;
 
-        if(!categories){
+        if(!categories || categories.length === 0){
             return res.status(200).json({message: "No categories saved"});
         }
 
-        const lowerCaseCategories = categories.map(cat => cat.toLowerCase());
+        const categoryParams = categories.join(',');
         
         const response = await axios.get(`${BASE_URL}latest-news`, {
             params:{
                 apiKey,
-                language: "en"
+                language: "en",
+                category: categoryParams
             }
         })
 
         const news  = response.data.news;
 
-        const filteredNews = news.filter(article => lowerCaseCategories.includes(article.category?.toLowerCase()));
-
-        res.status(200).json(filteredNews);
+        res.status(200).json(news);
 
     } catch (error) {
         console.log("Error in getting the category news ", error);
