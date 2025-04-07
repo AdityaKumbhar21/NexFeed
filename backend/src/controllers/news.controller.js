@@ -164,3 +164,29 @@ export const getAllSavedArticles = async (req, res)=>{
             res.status(500).json({message: "Internal server issue"});
     }
 }
+
+export const searchArticle = async(req, res)=>{
+    try {
+        const keyword = req.query.keyword;
+
+        if(!keyword){
+            return res.status(400).json({message: "Keyword required to search"});
+        }
+
+
+        const response = await axios.get(`${BASE_URL}search`,{
+            params:{
+                apiKey,
+                keywords: keyword,
+                language: "en",
+            }
+        });
+
+        const news = response.data.news;
+
+        res.status(200).json(news);
+    } catch (error) {
+        console.log("Error in searching ", error);
+        res.status(500).json({message: "Internal server issue"});
+    }
+}
