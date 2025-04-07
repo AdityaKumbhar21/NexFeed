@@ -15,9 +15,13 @@ const newsPrefSchema = new mongoose.Schema({
     savedArticles:{
         type: [],
         default: [{
+            id: "",
             title: "",
-            url:"",
-            source:""
+            description: "",
+            author: "",
+            image: "",
+            language: "",
+            published: ""
         }]
     }
 

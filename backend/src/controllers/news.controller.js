@@ -103,3 +103,64 @@ export const getCategoryNews = async (req, res)=>{
         
     }
 }
+
+export const saveArticle = async(req, res)=>{
+    try {
+        const {id,title,description,author,image,language,published} = req.body;
+        const userId = req.user._id;
+
+        const newsPref = await newsModel.findOne({userId});
+
+        if(newsPref){
+            const prevStored = newsPref.savedArticles.some(article => article.id === id);
+
+            if(!prevStored){
+                newsPref.savedArticles.push({
+                    id, title, description, author, image, language, published
+                });
+                await newsPref.save();
+
+                return res.status(200).json({message: "Article saved successfully"});
+            }
+
+            else{
+                return res.status(400).json({message: "Article already saved"});
+            }
+        }
+        else{
+            const createdNews = await newsModel.create({
+                userId,
+                savedArticles: [{
+                    id, title, description, author, image, language, published
+                }],
+        });
+
+            await createdNews.save();
+            return res.status(200).json({message: "Article saved successfully"});
+        }
+
+
+    } catch (error) {
+        console.log("Error in saving the article ", error);
+        res.status(500).json({message: "Internal server issue"});
+    }
+}
+
+export const getAllSavedArticles = async (req, res)=>{
+    try {
+        const userId = req.user._id;
+        const newsUser = await newsModel.findOne({userId});
+
+        const savedNews = newsUser.savedArticles;
+
+        if(!savedNews || savedNews.length === 1){
+            return res.status(400).json({message: "No saved articles"});
+        }   
+        const news = savedNews.slice(1);
+        
+        res.status(200).json(news);
+    } catch (error) {
+            console.log("Error in getting saved articles ", error);
+            res.status(500).json({message: "Internal server issue"});
+    }
+}
