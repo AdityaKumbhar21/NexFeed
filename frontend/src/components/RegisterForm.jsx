@@ -1,10 +1,18 @@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-2xl p-12 bg-black text-white rounded-2xl shadow-2xl">
+      <button
+          onClick={() => navigate("/")}
+          className="mb-4 self-start text-blue-600  text-sm hover:underline"
+        >
+          ← Back to Home
+        </button>
         <h2 className="text-3xl font-bold text-center mb-8">Create an Account</h2>
         <form className="space-y-6">
           <Input type="text" placeholder="Full name" required  name = "fullname"className="py-4 text-base" />
